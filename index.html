@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>ZEUS Translation</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Zeus Editor Dependencies -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/dialog/dialog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/search/matchesonscrollbar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;700&family=Noto+Kufi+Arabic:wght@400;700&display=swap" rel="stylesheet">
+
+    <script async defer src="https://apis.google.com/js/api.js"></script>
+    <script async defer src="https://accounts.google.com/gsi/client"></script>
+    
+    <!-- CodeMirror Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/mode/overlay.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/dialog/dialog.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/search/searchcursor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/search/search.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/search/jump-to-line.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/scroll/annotatescrollbar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/search/matchesonscrollbar.js"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              // Using CSS variables for dynamic theming
+              primary: 'rgb(var(--color-primary) / <alpha-value>)',
+              secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
+              
+              'dark-bg-main': '#09090b', /* Zinc 950 */
+              'dark-bg': '#18181b',      /* Zinc 900 */
+              'dark-card': '#27272a',    /* Zinc 800 */
+              'dark-text': '#e4e4e7',    /* Zinc 200 */
+              'dark-border': 'rgba(255,255,255,0.08)',
+            },
+            fontFamily: {
+                sans: ['Tajawal', 'sans-serif'],
+                mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+            },
+            animation: {
+                'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        :root {
+            /* Default Theme (Violet/Pink) - defined as RGB for Tailwind opacity support */
+            --color-primary: 212 175 55;   /* Gold */
+            --color-secondary: 250 204 21; /* Yellow-400 */
+        }
+        
+        body {
+            margin: 0;
+            background-color: #09090b;
+            color: #e4e4e7;
+            overflow: hidden; /* Crucial: App manages internal scrolling */
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Subtle Mesh Background */
+        .bg-mesh {
+            background-color: #09090b;
+            background-image: 
+                radial-gradient(at 0% 0%, rgb(var(--color-primary) / 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgb(var(--color-secondary) / 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            transition: background-image 0.5s ease;
+        }
+
+        /* Custom Scrollbar (Thin & Sleek) */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .latin-text {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* Utilities */
+        .glass {
+            background: rgba(9, 9, 11, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        /* Prevent iOS Zoom on inputs */
+        input, textarea {
+            font-size: 16px !important; 
+        }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "file-saver": "https://aistudiocdn.com/file-saver@^2.0.5",
+    "docx": "https://aistudiocdn.com/docx@^9.5.1",
+    "jwt-decode": "https://aistudiocdn.com/jwt-decode@^4.0.0",
+    "jszip": "https://aistudiocdn.com/jszip@^3.10.1",
+    "mammoth": "https://aistudiocdn.com/mammoth@^1.7.0",
+    "path": "https://aistudiocdn.com/path@^0.12.7",
+    "vite": "https://aistudiocdn.com/vite@^7.2.6",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1",
+    "url": "https://aistudiocdn.com/url@^0.11.4"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div id="root" class="h-full w-full"></div>
+    <script type="module" src="/index.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          try {
+            navigator.serviceWorker.register('/sw.js').catch(err => {
+                // Silently handle SW registration errors (e.g. cross-origin issues in WebContainers)
+                console.warn('SW registration skipped:', err);
+            });
+          } catch(e) {
+            console.warn('SW Init failed', e);
+          }
+        });
+      }
+    </script>
+</body>
+</html>
